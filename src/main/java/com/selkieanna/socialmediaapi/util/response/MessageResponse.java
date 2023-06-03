@@ -1,4 +1,4 @@
-package com.selkieanna.socialmediaapi.authorization.controller.response;
+package com.selkieanna.socialmediaapi.response;
 
 public class MessageResponse {
 

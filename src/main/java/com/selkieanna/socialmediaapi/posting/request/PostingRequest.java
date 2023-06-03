@@ -1,4 +1,4 @@
-package com.selkieanna.socialmediaapi.posting.controller;
+package com.selkieanna.socialmediaapi.request;
 
 public class PostingRequest {
     private String header;
