@@ -1,4 +1,4 @@
-package com.selkieanna.socialmediaapi.response;
+package com.selkieanna.socialmediaapi.authorization.response;
 
 public class JwtResponse {
     private final String jwtToken;

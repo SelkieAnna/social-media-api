@@ -1,9 +1,9 @@
 package com.selkieanna.socialmediaapi.authorization.controller;
 
-import com.selkieanna.socialmediaapi.authorization.controller.request.SignInRequest;
-import com.selkieanna.socialmediaapi.authorization.controller.request.SignUpRequest;
-import com.selkieanna.socialmediaapi.authorization.controller.response.JwtResponse;
-import com.selkieanna.socialmediaapi.authorization.controller.response.MessageResponse;
+import com.selkieanna.socialmediaapi.authorization.request.SignInRequest;
+import com.selkieanna.socialmediaapi.authorization.request.SignUpRequest;
+import com.selkieanna.socialmediaapi.authorization.response.JwtResponse;
+import com.selkieanna.socialmediaapi.util.response.MessageResponse;
 import com.selkieanna.socialmediaapi.authorization.model.Role;
 import com.selkieanna.socialmediaapi.authorization.model.RoleEnum;
 import com.selkieanna.socialmediaapi.authorization.model.User;

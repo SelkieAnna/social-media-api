@@ -1,4 +1,4 @@
-package com.selkieanna.socialmediaapi.posting;
+package com.selkieanna.socialmediaapi.posting.service;
 
 import com.selkieanna.socialmediaapi.authorization.model.User;
 import com.selkieanna.socialmediaapi.authorization.repository.UserRepository;

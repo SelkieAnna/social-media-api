@@ -1,4 +1,4 @@
-package com.selkieanna.socialmediaapi.request;
+package com.selkieanna.socialmediaapi.authorization.request;
 
 import java.util.Set;
 

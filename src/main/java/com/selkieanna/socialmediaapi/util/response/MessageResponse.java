@@ -1,4 +1,4 @@
-package com.selkieanna.socialmediaapi.response;
+package com.selkieanna.socialmediaapi.util.response;
 
 public class MessageResponse {
 
