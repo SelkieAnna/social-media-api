@@ -1,6 +1,7 @@
 package com.selkieanna.socialmediaapi.authorization.model;
 
 import com.selkieanna.socialmediaapi.posting.model.Post;
+import com.selkieanna.socialmediaapi.social.model.Follow;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -27,6 +28,10 @@ public class User {
     private Set<Role> roles = new HashSet<>();
     @OneToMany(mappedBy = "author")
     private Set<Post> posts;
+    @OneToMany(mappedBy = "follower")
+    private Set<Follow> follows;
+    @OneToMany(mappedBy = "followee")
+    private Set<Follow> followedBy;
 
     public User() {
     }
@@ -57,6 +62,18 @@ public class User {
         return roles;
     }
 
+    public Set<Post> getPosts() {
+        return posts;
+    }
+
+    public Set<Follow> getFollows() {
+        return follows;
+    }
+
+    public Set<Follow> getFollowedBy() {
+        return followedBy;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -75,5 +92,17 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
+    }
+
+    public void setFollows(Set<Follow> follows) {
+        this.follows = follows;
+    }
+
+    public void setFollowedBy(Set<Follow> followedBy) {
+        this.followedBy = followedBy;
     }
 }

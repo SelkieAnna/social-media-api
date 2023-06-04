@@ -48,6 +48,10 @@ public class SocialController {
         if (!followRepository.existsByFollowerAndFollowee(follower, followee)) {
             return ResponseEntity.ok(new MessageResponse("Success"));
         }
+        // check if user tries to follow themselves
+        if (follower.getId().equals(followee.getId())) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Users cannot follow themselves"));
+        }
         Follow follow = followRepository.findByFollowerAndFollowee(follower, followee)
                 .orElseThrow(() -> new RuntimeException("Error: Follow not found"));
         followRepository.delete(follow);

@@ -9,9 +9,9 @@ public class Follow {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @OneToOne
+    @ManyToOne
     private User follower;
-    @OneToOne
+    @ManyToOne
     private User followee;
 
     public Follow() {

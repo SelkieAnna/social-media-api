@@ -13,6 +13,10 @@ import com.selkieanna.socialmediaapi.posting.service.PostingValidationService;
 import com.selkieanna.socialmediaapi.util.response.MessageResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,8 +31,7 @@ import javax.sql.rowset.serial.SerialException;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -185,5 +188,43 @@ public class PostingController {
 
         attachmentRepository.deleteById(Long.valueOf(attachmentId));
         return ResponseEntity.ok(new MessageResponse("Success"));
+    }
+
+    @GetMapping("/feed")
+    public ResponseEntity<?> feed(
+            @RequestParam(defaultValue = "0") String page,
+            @RequestParam(defaultValue = "10") String size) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepository.findByName(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Error: User not found"));
+
+        Pageable pageRequest =
+                (Pageable) PageRequest.of(Integer.parseInt(page), Integer.parseInt(size),
+                        Sort.by("createdAt").descending());
+        Page<Post> postsPage = postRepository.findAllByFollowFollowerId(user.getId(), pageRequest);
+
+        if (user.getFollows().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new MessageResponse("Please follow someone"));
+        }
+        if (postsPage.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new MessageResponse("No posts"));
+        }
+
+        List<Post> posts = new ArrayList<Post>();
+        posts = postsPage.getContent();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("posts", posts.stream().map(post -> new PostResponse(
+                post.getId(),
+                post.getHeader(),
+                post.getText(),
+                post.getAttachments().stream()
+                        .map(Attachment::getId).collect(Collectors.toList()),
+                post.getAuthor().getId())
+        ));
+        response.put("currentPage", postsPage.getNumber());
+        response.put("totalItems", postsPage.getTotalElements());
+        response.put("totalPages", postsPage.getTotalPages());
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
