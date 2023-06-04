@@ -1,0 +1,903 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Social Media API",
+    "description": "This is a Social Media API documentation on the OpenAPI 3.0 specification.\n\nSome useful links:\n- [Social Media API repository](https://github.com/swagger-api/swagger-petstore)",
+    "version": "1.0.11"
+  },
+  "tags": [
+    {
+      "name": "authorization",
+      "description": "User authorization and token generation"
+    },
+    {
+      "name": "posting",
+      "description": "Managing posts uploaded by users"
+    },
+    {
+      "name": "social",
+      "description": "Managing follows and friends"
+    }
+  ],
+  "paths": {
+    "/api/auth/signup": {
+      "post": {
+        "tags": [
+          "authorization"
+        ],
+        "summary": "Create new user",
+        "description": "Create user by username, email, password and role",
+        "operationId": "signUp",
+        "requestBody": {
+          "description": "Create new user",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "userName",
+                  "email",
+                  "password",
+                  "role"
+                ],
+                "type": "object",
+                "properties": {
+                  "userName": {
+                    "type": "string",
+                    "example": "example"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "example@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "example"
+                  },
+                  "roles": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "example": "ROLE_USER"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/signin": {
+      "post": {
+        "tags": [
+          "authorization"
+        ],
+        "summary": "Generate jwt token",
+        "description": "Generate user's temporary jwt token for further authorization",
+        "operationId": "signIn",
+        "requestBody": {
+          "description": "Generate jwt token",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "userName",
+                  "password"
+                ],
+                "type": "object",
+                "properties": {
+                  "userName": {
+                    "type": "string",
+                    "example": "example"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "example"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation and generation of jwt token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "jwtToken": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MiIsImlhdCI6MTY4NTg4OTU3NywiZXhwIjoxNjg1ODkzMTc3fQ.rypoenr0OubFlAZIWCmBMx9MyotDldPr_E9c5TDkgnM"
+                    },
+                    "userId": {
+                      "type": "integer",
+                      "format": "int64",
+                      "example": 1
+                    },
+                    "userName": {
+                      "type": "string",
+                      "example": "example"
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email",
+                      "example": "example@example.com"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/health": {
+      "get": {
+        "tags": [
+          "authorization"
+        ],
+        "summary": "Check application health",
+        "description": "Check application health",
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "OK"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/authorized": {
+      "get": {
+        "tags": [
+          "authorization"
+        ],
+        "summary": "Check if user is authorized",
+        "description": "Check if user is authorized",
+        "operationId": "authorized",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "OK"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwt_auth": [
+              "write:jwt_auth",
+              "read:jwt_auth"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/posts": {
+      "post": {
+        "tags": [
+          "posting"
+        ],
+        "summary": "New post",
+        "description": "Create a new post as logged in user",
+        "operationId": "newPost",
+        "requestBody": {
+          "description": "Create a new post as logged in user",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "header",
+                  "text"
+                ],
+                "type": "object",
+                "properties": {
+                  "header": {
+                    "type": "string",
+                    "example": "example"
+                  },
+                  "text": {
+                    "type": "string",
+                    "example": "example"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Post data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "postId": {
+                      "type": "integer",
+                      "format": "int64",
+                      "example": 1
+                    },
+                    "header": {
+                      "type": "string",
+                      "example": "example"
+                    },
+                    "text": {
+                      "type": "string",
+                      "example": "example"
+                    },
+                    "attachmentIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer",
+                        "format": "int64"
+                      }
+                    },
+                    "authorId": {
+                      "type": "integer",
+                      "format": "int64",
+                      "example": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwt_auth": [
+              "write:jwt_auth",
+              "read:jwt_auth"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/posts/{postId}": {
+      "get": {
+        "tags": [
+          "posting"
+        ],
+        "summary": "Get post",
+        "description": "Get post by id as logged in user",
+        "operationId": "viewPost",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "postId",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "required": true,
+            "description": "Numeric id of the post to get"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Post data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "postId": {
+                      "type": "integer",
+                      "format": "int64",
+                      "example": 1
+                    },
+                    "header": {
+                      "type": "string",
+                      "example": "example"
+                    },
+                    "text": {
+                      "type": "string",
+                      "example": "example"
+                    },
+                    "attachmentIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer",
+                        "format": "int64"
+                      }
+                    },
+                    "authorId": {
+                      "type": "integer",
+                      "format": "int64",
+                      "example": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwt_auth": [
+              "write:jwt_auth",
+              "read:jwt_auth"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "posting"
+        ],
+        "summary": "Edit post",
+        "description": "Edit your existing post as logged in user",
+        "operationId": "editPost",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "postId",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "required": true,
+            "description": "Numeric id of the post to edit"
+          }
+        ],
+        "requestBody": {
+          "description": "Edit an existing post as logged in user",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "header",
+                  "text"
+                ],
+                "type": "object",
+                "properties": {
+                  "header": {
+                    "type": "string",
+                    "example": "example"
+                  },
+                  "text": {
+                    "type": "string",
+                    "example": "example"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Post data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "postId": {
+                      "type": "integer",
+                      "format": "int64",
+                      "example": 1
+                    },
+                    "header": {
+                      "type": "string",
+                      "example": "example"
+                    },
+                    "text": {
+                      "type": "string",
+                      "example": "example"
+                    },
+                    "attachmentIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer",
+                        "format": "int64"
+                      }
+                    },
+                    "authorId": {
+                      "type": "integer",
+                      "format": "int64",
+                      "example": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwt_auth": [
+              "write:jwt_auth",
+              "read:jwt_auth"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "posting"
+        ],
+        "summary": "Delete post",
+        "description": "Delete your post by id as logged in user",
+        "operationId": "deletePost",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "postId",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "required": true,
+            "description": "Numeric id of the post to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwt_auth": [
+              "write:jwt_auth",
+              "read:jwt_auth"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/posts/{postId}/attachments": {
+      "post": {
+        "tags": [
+          "posting"
+        ],
+        "summary": "Upload attachment",
+        "description": "Add attachment to your existing post as logged in user",
+        "operationId": "uploadAttachment",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "postId",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "required": true,
+            "description": "Numeric id of the post to attach file to"
+          }
+        ],
+        "requestBody": {
+          "description": "Upload an attachment to your existing post as logged in user",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Attachment properties",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "postId": {
+                      "type": "integer",
+                      "format": "int64",
+                      "example": 1
+                    },
+                    "header": {
+                      "type": "string",
+                      "example": "example"
+                    },
+                    "text": {
+                      "type": "string",
+                      "example": "example"
+                    },
+                    "attachmentIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer",
+                        "format": "int64"
+                      }
+                    },
+                    "authorId": {
+                      "type": "integer",
+                      "format": "int64",
+                      "example": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwt_auth": [
+              "write:jwt_auth",
+              "read:jwt_auth"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/posts/{postId}/attachments/{attachmentId}": {
+      "get": {
+        "tags": [
+          "posting"
+        ],
+        "summary": "Get attachment",
+        "description": "View attachment of existing post as logged in user",
+        "operationId": "viewAttachment",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "postId",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "required": true,
+            "description": "Numeric id of the post attached to"
+          },
+          {
+            "in": "path",
+            "name": "attachmentId",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "required": true,
+            "description": "Numeris id of the attachment to view"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Attachment data",
+            "content": {
+              "image/jpg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwt_auth": [
+              "write:jwt_auth",
+              "read:jwt_auth"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "posting"
+        ],
+        "summary": "Delete attachment",
+        "description": "Delete attachment of your existing post as logged in user",
+        "operationId": "deleteAttachment",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "postId",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "required": true,
+            "description": "Numeric id of the post attached to"
+          },
+          {
+            "in": "path",
+            "name": "attachmentId",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "required": true,
+            "description": "Numeris id of the attachment to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwt_auth": [
+              "write:jwt_auth",
+              "read:jwt_auth"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/posts/feed": {
+      "get": {
+        "tags": [
+          "posting"
+        ],
+        "summary": "Get posts feed",
+        "description": "Get post data of the followed users sorted by posting time as logged in user",
+        "operationId": "feed",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "required": false,
+            "description": "Page"
+          },
+          {
+            "in": "query",
+            "name": "size",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "required": false,
+            "description": "Number of posts on one page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Posts and page data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pages": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "postId": {
+                            "type": "integer",
+                            "format": "int64"
+                          },
+                          "header": {
+                            "type": "string"
+                          },
+                          "text": {
+                            "type": "string"
+                          },
+                          "attachmentIds": {
+                            "type": "array",
+                            "items": {
+                              "type": "integer",
+                              "format": "int64"
+                            }
+                          },
+                          "authorId": {
+                            "type": "integer",
+                            "format": "int64"
+                          }
+                        }
+                      }
+                    },
+                    "currentPage": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "totalItems": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "totalPages": {
+                      "type": "integer",
+                      "format": "int32"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwt_auth": [
+              "write:jwt_auth",
+              "read:jwt_auth"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/social/follow/{userId}": {
+      "post": {
+        "tags": [
+          "social"
+        ],
+        "summary": "Follow user",
+        "description": "Follow user as logged in user, also add friend",
+        "operationId": "followUser",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "required": true,
+            "description": "Page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwt_auth": [
+              "write:jwt_auth",
+              "read:jwt_auth"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "social"
+        ],
+        "summary": "Unfollow user",
+        "description": "Unfollow user as logged in user, also unfriend",
+        "operationId": "unfollowUser",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "required": true,
+            "description": "Page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwt_auth": [
+              "write:jwt_auth",
+              "read:jwt_auth"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/social/isfriend/{userId}": {
+      "get": {
+        "tags": [
+          "social"
+        ],
+        "summary": "Check if friends",
+        "description": "Check if the user are friends with logged in user, can also be used for checking if users can chat",
+        "operationId": "isFriend",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "required": true,
+            "description": "Page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Check if the users are friends",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "jwt_auth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      }
+    }
+  }
+}
